@@ -10,4 +10,3 @@ wynik = pomnoz_elementy(moje_liczby)
 
 print(f"Lista wejściowa: {moje_liczby}")
 print(f"Lista zwrócona:  {wynik}")
-
