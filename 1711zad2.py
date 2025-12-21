@@ -1,4 +1,6 @@
-a = int(input("Podaj liczbę: "))
-b = int(input("Podaj drugą liczbę: "))
+def mnozenie(liczba1, liczba2):
 
-print(a * b)
+    return liczba1 * liczba2
+
+
+print(mnozenie(2, 4))
