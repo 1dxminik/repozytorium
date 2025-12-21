@@ -1,4 +1,8 @@
-name = str(input("Podaj swoje imię: "))
-surname = str(input("Podaj swoje nazwisko: "))
+def przywitanie(name, surname):
 
-print(str("Cześć {} {}").format(name, surname))
+    zwrot = f"Cześć {name} {surname}!"
+    return zwrot
+
+
+witam = przywitanie("Dominik", "Czapla")
+print(witam)
