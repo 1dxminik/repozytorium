@@ -1,10 +1,9 @@
-#tak naprawde to zadanie 5
+def parzystosc(liczba):
+    if liczba % 2 == 0:
+        return True
+    else:
+        return False
 
-a = list(input("Podaj elementy listy: ").split())
-b = int(input("Napisz ile jest elementów listy: "))
 
-if len(a) != b:
-    print(False)
-
-else:
-    print(True)
+wynik = parzystosc(4)
+print(wynik)
