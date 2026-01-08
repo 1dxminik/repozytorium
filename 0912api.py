@@ -6,3 +6,4 @@ api = FastAPI()
 @api.get("/")
 def get_index():
     return {"message": "Hello World"}
+
