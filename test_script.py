@@ -4,17 +4,17 @@ import os
 import glob
 from concurrent.futures import ThreadPoolExecutor
 
-# Adres API
+
 API_URL = "http://127.0.0.1:8000/detect/local"
 DATASET_DIR = "dataset_photos"
 
-# Pobieramy listę plików
+
 files = [os.path.abspath(p) for p in glob.glob(f"{DATASET_DIR}/*.jpg")]
 
 
 def send_request(file_path):
     try:
-        # Timeout ważny, żeby nie wisiało w nieskończoność
+
         response = requests.get(API_URL, params={"path": file_path}, timeout=5)
         if response.status_code == 200:
             print(f"[OK] Wysłano: {os.path.basename(file_path)}")
@@ -32,8 +32,6 @@ def main():
     print(f"Kolejkuję {len(files)} zdjęć używając puli wątków...")
     start = time.time()
 
-    # Używamy max_workers=50. To wystarczająco dużo, żeby kolejka rosła błyskawicznie,
-    # ale wystarczająco mało, żeby nie zawiesić Windowsa (błąd 10061).
     with ThreadPoolExecutor(max_workers=50) as executor:
         executor.map(send_request, files)
 

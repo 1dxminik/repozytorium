@@ -7,7 +7,7 @@ import sys  # <--- Dodałem brakujący import
 from ultralytics import YOLO
 import cv2
 
-# Ładowanie modelu
+
 model = YOLO("yolov8n.pt")
 
 RESULTS_DB = "results.db"
@@ -31,10 +31,10 @@ def process_image(task_data):
     img_path = ""
 
     try:
-        # 1. Pobieranie obrazu
+
         if task_data['type'] == 'url':
             img_path = f"temp_{task_id}.jpg"
-            resp = requests.get(task_data['url'], timeout=5)  # Timeout żeby nie wisiało
+            resp = requests.get(task_data['url'], timeout=5)
             if resp.status_code != 200:
                 raise Exception(f"Download failed: {resp.status_code}")
             with open(img_path, 'wb') as f:
@@ -42,21 +42,21 @@ def process_image(task_data):
         else:
             img_path = task_data['path']
 
-        # 2. Sprawdzenie czy plik jest poprawnym obrazem (To naprawia crash)
+
         img_check = cv2.imread(img_path)
         if img_check is None:
             raise Exception("Invalid image file or download blocked")
 
-        # 3. ANALIZA AI
+
         results = model.predict(img_path, save=False, classes=[0], verbose=False)
         count = len(results[0].boxes)
 
-        # 4. Rysowanie i zapis
+
         result_img = results[0].plot()
         save_path = f"{PROCESSED_DIR}/{task_id}_result.jpg"
         cv2.imwrite(save_path, result_img)
 
-        # Sprzątanie
+
         if task_data['type'] == 'url' and os.path.exists(img_path):
             os.remove(img_path)
 
@@ -64,10 +64,10 @@ def process_image(task_data):
         update_db(task_id, "DONE", count)
 
     except Exception as e:
-        # Teraz worker nie umrze, tylko wypisze błąd i pójdzie dalej!
+
         print(f" [!] Error processing {task_id}: {str(e)[:50]}...")
         update_db(task_id, "ERROR", 0)
-        # Sprzątanie po błędzie
+
         if 'img_path' in locals() and task_data['type'] == 'url' and os.path.exists(img_path):
             try:
                 os.remove(img_path)
