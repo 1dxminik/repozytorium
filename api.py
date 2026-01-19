@@ -9,13 +9,13 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Konfiguracja
+
 UPLOAD_DIR = "uploads"
 RESULTS_DB = "results.db"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-# Inicjalizacja prostej bazy danych SQLite (do statusów)
+
 def init_db():
     conn = sqlite3.connect(RESULTS_DB)
     c = conn.cursor()
@@ -28,7 +28,7 @@ def init_db():
 init_db()
 
 
-# Funkcja pomocnicza do wysyłania do RabbitMQ
+
 def send_to_queue(task_data):
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
@@ -43,7 +43,7 @@ def send_to_queue(task_data):
     connection.close()
 
 
-# Funkcja pomocnicza do zapisu statusu PENDING
+
 def save_task_init(task_id):
     conn = sqlite3.connect(RESULTS_DB)
     c = conn.cursor()
@@ -52,9 +52,7 @@ def save_task_init(task_id):
     conn.close()
 
 
-# --- ENDPOINTY WYMAGANE NA OCENĘ ---
 
-# 1. POST - Upload zdjęcia (Wymaganie na 5)
 @app.post("/detect/upload")
 async def detect_upload(file: UploadFile = File(...)):
     task_id = str(uuid.uuid4())
@@ -68,7 +66,7 @@ async def detect_upload(file: UploadFile = File(...)):
     return {"task_id": task_id, "status": "PENDING"}
 
 
-# 2. GET - URL z Internetu (Wymaganie na 4)
+
 @app.get("/detect/url")
 async def detect_url(url: str):
     task_id = str(uuid.uuid4())
@@ -77,7 +75,7 @@ async def detect_url(url: str):
     return {"task_id": task_id, "status": "PENDING"}
 
 
-# 3. GET - Plik lokalny na serwerze (Wymaganie na 3)
+
 @app.get("/detect/local")
 async def detect_local(path: str):
     task_id = str(uuid.uuid4())
@@ -89,7 +87,7 @@ async def detect_local(path: str):
     return {"task_id": task_id, "status": "PENDING"}
 
 
-# 4. GET - Sprawdzanie statusu (Wymaganie na 4)
+
 @app.get("/status/{task_id}")
 async def get_status(task_id: str):
     conn = sqlite3.connect(RESULTS_DB)
